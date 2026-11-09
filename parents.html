@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Wobble Bear · Family wardrobe</title><style>
+*{box-sizing:border-box}body{margin:0;background:#132721;color:#fff3da;font:17px/1.5 system-ui,sans-serif}main{width:min(100% - 28px,520px);margin:6vh auto}small{letter-spacing:.12em;color:#eec98c}h1{font: bold 2rem Georgia,serif;line-height:1.1;margin:.6em 0}section{background:#213a31;border:1px solid #617364;border-radius:16px;padding:1.2rem}label,a,button{display:block;padding:.7rem 0}button,.link{border:0;border-radius:8px;padding:.75rem 1rem;background:#f2cb89;color:#1b2c25;font-weight:700;text-align:center;font-size:1rem;text-decoration:none}button:disabled{opacity:.5}a{color:#f3d492}input{width:19px;height:19px;vertical-align:middle;margin-right:.5rem} [hidden]{display:none!important}</style></head><body><main><small>WOBBLE BEAR</small><h1 id="title"></h1><section><strong id="bundle"></strong><p id="desc"></p><p role="status" id="state"></p><div id="controls" hidden><a hidden id="signin" class="link"></a><div id="confirm" hidden><label><input type="checkbox" id="adult"><span id="adultText"></span></label><button id="pay" disabled></button></div></div></section><a id="back"></a></main><script>
+const q=new URLSearchParams(location.search),fi=q.get("lang")==="fi",loc=fi?"fi":"en",edition=q.get("edition")==="metsanvaki"?"metsanvaki":"puronvarsi",w=(a,b)=>fi?a:b,$=id=>document.getElementById(id);
+document.documentElement.lang=loc;$("title").textContent=w("Vanhemman vaatekaappi","Family wardrobe");
+$("bundle").textContent=w("Karhun tyylipaketti","Bear’s style pack");
+$("desc").textContent=w("Kaksi asua ja koskirunoilijan puhetyyli. Kaikki kolme voi myös avata pelaamalla. Paketti ei muuta kenttiä tai pisteitä.","Two outfits and the River rhymer voice style. All three can also be earned by playing. They do not change trails or scores.");
+$("back").textContent=w("← Takaisin peliin","← Back to the game");$("back").href="./"+edition+"/?lang="+loc+"&wardrobe=1"+(q.get("session_id")?"&session_id="+encodeURIComponent(q.get("session_id")):"");
+const offline=w("Oikean rahan kauppa ei ole vielä auki. Hunajalla voi jo avata tyylejä pelissä.","Real-money checkout is not open yet. You can already unlock styles with honey in the game.");
+let offer=null;$("state").textContent=w("Tarkistetaan kauppa…","Checking the shop…");
+async function load(){try{
+ const receipt=q.get("session_id");const resp=await fetch("./api/wardrobe/status"+(receipt?"?session_id="+encodeURIComponent(receipt):""),{cache:"no-store"});if(!resp.ok)throw 0;
+ offer=await resp.json();if(!offer.available)throw 0;
+ if(offer.owned){$("state").textContent=w("Tyylipaketti kuuluu tilillesi. Palaa peliin ja avaa vaatekaappi.","Your account owns this pack. Return to the game and open the wardrobe.");return}
+ const price=new Intl.NumberFormat(fi?"fi-FI":"en-GB",{style:"currency",currency:offer.currency}).format(offer.amount/100);
+ $("state").textContent=(q.has("cancel")?w("Maksu peruttiin. ","Checkout cancelled. "):"")+w("Kertamaksu: ","One-time payment: ")+price;
+ $("controls").hidden=false;
+ if(!offer.signedIn){const a=$("signin");a.hidden=false;a.textContent=w("Vanhemman kirjautuminen","Parent sign-in");a.href="/signin-with-chatgpt?return_to="+encodeURIComponent(location.pathname+location.search);a.target="_top";return}
+ $("confirm").hidden=false;$("adultText").textContent=w("Olen aikuinen ja haluan ostaa tämän paketin.","I am an adult and want to buy this pack.");
+ $("pay").textContent=w("Jatka maksamaan · ","Continue to checkout · ")+price;
+}catch{$("state").textContent=offline}}
+$("adult").onchange=()=>$("pay").disabled=!$("adult").checked;
+$("pay").onclick=async()=>{if(!$("adult").checked||!offer)return;$("pay").disabled=true;try{const r=await fetch("./api/wardrobe/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({adult:true,amount:offer.amount,currency:offer.currency,lang:loc,edition})});const v=await r.json();if(v.owned){location.reload();return}if(!r.ok||new URL(v.url).origin!=="https://checkout.stripe.com")throw 0;location.assign(v.url)}catch{$("state").textContent=w("Maksusivua ei voitu avata. Tarkista hinta uudelleen.","Checkout could not open. Refresh to check the price again.");}};
+load();</script></body></html>
