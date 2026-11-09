@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#13251f"><title>Wobble Bear · Choose your trail</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#142720;color:#f5eddb;font-family:system-ui,sans-serif;min-height:100svh;display:grid;align-content:center}main{width:min(1100px,100%);padding:clamp(18px,5vw,64px);margin:auto}h1{font:600 clamp(43px,7vw,85px)/1 Georgia,serif;letter-spacing:-.055em;margin:0 0 32px}.versions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:22px}a{display:block;background:#22372d;border:1px solid #677764;border-radius:14px;overflow:hidden;color:inherit;text-decoration:none}a:hover,a:focus-visible{outline:3px solid #ebc57c;outline-offset:3px}img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover}section{padding:22px}small{color:#e8c487;font-size:14px}h2{font:600 34px/1.2 Georgia,serif;margin:4px 0 10px}p{color:#e2e6db;line-height:1.45;margin:0 0 20px}strong{display:inline-block;padding:7px 18px;background:#edcb87;color:#253429;border-radius:5px} 
+
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}#language{border:1px solid #a9a98c;background:#22372d;color:#fff2d0;border-radius:7px;padding:10px 16px;font:inherit;cursor:pointer}#language:focus-visible{outline:3px solid #ebc57c}
+header{flex-wrap:wrap;margin-bottom:24px}header h1{margin:0}#language{min-height:44px}
+</style><meta name="robots" content="noindex"></head><body><main><header><h1>Wobble Bear</h1><button id="language" type="button">Suomi</button></header><p id="intro">Three free trails. Choose your woodland adventure.</p><div class="versions">
+<a href="metsanvaki/"><img src="metsanvaki.webp" alt=""><section><small>PAW PRINT TRAILS · 0.9</small><h2 id="forest">Forest Friends</h2><p id="wood">Start on a wide path, weave past stumps and jump fallen logs on Honey Hill.</p><strong id="a">Play Forest Friends</strong></section></a>
+<a href="puronvarsi/"><img src="puronvarsi.webp" alt=""><section><small>PAW PRINT TRAILS · 0.9</small><h2 id="brook">Brookside</h2><p id="water">The same three trails, with streams, wooden bridges and ducks along the way.</p><strong id="b">Play Brookside</strong></section></a>
+</div></main><script>
+const fi={intro:"Kolme maksutonta rataa. Valitse metsäretki.",forest:"Metsänväki",wood:"Aloita leveältä polulta, pujottele kantoja ja hyppää Hunajamäen maapuiden yli.",a:"Pelaa Metsänväkeä",brook:"Puronvarsi",water:"Samat kolme rataa puroineen, puusiltoineen ja sorsineen.",b:"Pelaa Puronvartta"};
+const en=Object.fromEntries(Object.keys(fi).map(k=>[k,document.getElementById(k).textContent]));
+let lang="en";try{if(localStorage.getItem("wobble.language")==="fi") lang="fi"}catch(e){}
+function draw(){document.documentElement.lang=lang;document.title=lang==="fi"?"Wobble Bear · Valitse retki":"Wobble Bear · Choose your trail";for(const [k,v] of Object.entries(lang==="fi"?fi:en))document.getElementById(k).textContent=v;document.getElementById("language").textContent=lang==="fi"?"English":"Suomi";document.querySelectorAll("small").forEach(el=>el.textContent=(lang==="fi"?"JÄLKIJAHTI":"PAW PRINT TRAILS")+" · 0.9");}
+document.getElementById("language").onclick=()=>{lang=lang==="fi"?"en":"fi";try{localStorage.setItem("wobble.language",lang)}catch(e){}draw()};draw();
+</script></body></html>

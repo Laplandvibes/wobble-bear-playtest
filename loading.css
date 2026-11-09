@@ -1,0 +1,26 @@
+body #status {
+  visibility: visible;
+  align-items: center;
+  gap: 16px;
+  padding: max(18px, env(safe-area-inset-top)) 20px max(18px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: linear-gradient(#11231fce, #10231ff7), url("puronvarsi.webp") center / cover;
+  color: #fff2d5;
+  font: 500 1rem/1.45 system-ui, sans-serif;
+  text-align: center;
+  overflow: auto;
+}
+body #status::before {
+  content: "Wobble Bear";
+  font: 600 clamp(2rem, 8vw, 4rem)/1 Georgia, serif;
+}
+body #status-progress {
+  position: static;
+  width: min(320px, 80vw);
+  height: 12px;
+  margin: 0;
+  accent-color: #f3c67b;
+}
+body #status-notice { position: static; margin: 0; }
+#status p { margin: 0; }
+#status a { color: #ffe2a5; padding: 12px; }
