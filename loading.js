@@ -5,6 +5,8 @@
   const notice = document.getElementById("status-notice");
   let finnish = false;
   try { finnish = localStorage.getItem("wobble.language") === "fi"; } catch {}
+  const language = new URL(location.href).searchParams.get("lang");
+  if (language === "fi" || language === "en") finnish = language === "fi";
   const label = document.createElement("p");
   status.insertBefore(label, progress);
   const retry = document.createElement("a");
